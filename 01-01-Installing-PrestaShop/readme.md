@@ -1,10 +1,27 @@
 # Installing PrestaShop
 
 ## Problem
-Installing PrestaShop on a server can be a challenging task, especially for users who are unfamiliar with server configurations, database management, and file transfers. Many hosting services do not provide one-click installations, requiring manual setup, which involves downloading files, configuring databases, setting up permissions, and troubleshooting potential issues. Additionally, some users may struggle with selecting the right hosting provider, as not all servers are optimized for PrestaShop, potentially leading to performance or compatibility issues.
+Installing PrestaShop on a server can be a challenging task, 
+especially for users who are unfamiliar with server configurations, 
+database management, and file transfers. 
+
+Many hosting services do not provide one-click installations, 
+requiring manual setup, which involves downloading files, 
+configuring databases, setting up permissions, and troubleshooting potential issues. 
+
+Additionally, some users may struggle with selecting the right hosting provider, 
+as not all servers are optimized for PrestaShop, 
+potentially leading to performance or compatibility issues.
 
 ## Solution
-Installing PrestaShop can be straightforward if you choose the right hosting service. One recommended option is [GoDaddy](https://www.godaddy.com/). They provide optimized servers, an easy-to-use cPanel with tools for website management (such as cloning), and the ability to install various CMSs, including PrestaShop. Their automated installation process simplifies setup by handling some steps in the background.
+Installing PrestaShop can be straightforward if you choose the right hosting service. 
+
+One recommended option is [GoDaddy](https://www.godaddy.com/). 
+
+They provide optimized servers, an easy-to-use cPanel with tools for website management (such as cloning), 
+and the ability to install various CMSs, including PrestaShop. 
+
+Their automated installation process simplifies setup by handling some steps in the background.
 
 Alternatively, you can manually install PrestaShop, giving you full control over the process.
 
