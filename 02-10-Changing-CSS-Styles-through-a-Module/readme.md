@@ -48,6 +48,8 @@ After installing the module, you can use it to easily change the CSS styles of y
 - **No Direct File Editing**: Allows you to make changes without needing access to your theme's `.css` files.
 - **Easy Customization**: Quickly tweak visual styles, such as colors, fonts, or layout adjustments, directly in the Back Office.
 - **Safety**: Avoid the risk of overwriting or corrupting critical theme files.
+- **Accessibility**: Make changes without needing to have in-depth knowledge of CSS, allowing even those with little technical experience to style their website.
+- **No Need for External Tools**: Make changes directly in PrestaShop without needing external CSS editors or FTP access.
 
 ### Visual Example
 Once the module is installed, you’ll see an interface that looks like this:
