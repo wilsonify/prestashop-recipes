@@ -5,11 +5,13 @@ if (!defined('_PS_VERSION_')) {
 
 class OrderEmail extends Module
 {
+    const ORDER_EMAIL_RECIPIENTS = 'ORDER_EMAIL_RECIPIENTS';
+
     public function __construct()
     {
         $this->name = 'orderemail';
         $this->tab = 'email';
-        $this->version = '1.0.0';
+        $this->version = '1.1.0';  // Updated version
         $this->author = 'Your Name';
         $this->need_instance = 0;
 
@@ -21,25 +23,34 @@ class OrderEmail extends Module
 
     public function install()
     {
-        if (parent::install() && $this->registerHook('displayOrderConfirmation')) {
-            return true;
-        }
-        return false;
+        return parent::install() && $this->registerHook('displayOrderConfirmation');
     }
 
     public function getContent()
     {
+        // Handle form submission
         if (Tools::isSubmit('submit_orderemail')) {
-            Configuration::updateValue('ORDER_EMAIL_RECIPIENTS', Tools::getValue('order_email_recipients'));
+            $emailRecipients = Tools::getValue('order_email_recipients');
+            // Sanitize input to prevent XSS or other vulnerabilities
+            $emailRecipients = Tools::sanitize($emailRecipients);
+            // Validate email format and store value
+            if (filter_var($emailRecipients, FILTER_VALIDATE_EMAIL)) {
+                Configuration::updateValue(self::ORDER_EMAIL_RECIPIENTS, $emailRecipients);
+                $this->confirmations[] = $this->l('Settings have been updated.');
+            } else {
+                $this->errors[] = $this->l('Please enter a valid email address.');
+            }
         }
 
-        $emailRecipients = Configuration::get('ORDER_EMAIL_RECIPIENTS');
+        // Retrieve saved email recipients
+        $emailRecipients = Configuration::get(self::ORDER_EMAIL_RECIPIENTS);
 
+        // Form for managing email recipients
         $output = '
         <form method="post">
-            <label for="order_email_recipients">Email Recipients:</label>
-            <input type="text" name="order_email_recipients" value="' . htmlentities($emailRecipients) . '" />
-            <input type="submit" name="submit_orderemail" value="Save" />
+            <label for="order_email_recipients">' . $this->l('Email Recipients') . ':</label>
+            <input type="email" name="order_email_recipients" value="' . htmlentities($emailRecipients) . '" />
+            <input type="submit" name="submit_orderemail" value="' . $this->l('Save') . '" />
         </form>';
 
         return $output;
@@ -53,12 +64,13 @@ class OrderEmail extends Module
         $totalAmount = $params['total_amount'];
 
         // Retrieve the list of email recipients from configuration
-        $emailRecipients = Configuration::get('ORDER_EMAIL_RECIPIENTS');
+        $emailRecipients = Configuration::get(self::ORDER_EMAIL_RECIPIENTS);
         if (!empty($emailRecipients)) {
+            // Multiple recipients support
             $recipients = explode(',', $emailRecipients);
+            $subject = 'Order Confirmation: ' . $order->reference;
 
             // Prepare email content with enhanced information
-            $subject = 'Order Confirmation: ' . $order->reference;
             $body = 'Hello ' . $customerName . ',<br>';
             $body .= 'Your order <strong>' . $order->reference . '</strong> has been confirmed.<br>';
             $body .= 'Total amount to be paid: ' . $totalAmount . '.<br>';
@@ -66,25 +78,37 @@ class OrderEmail extends Module
 
             // Send email to each recipient
             foreach ($recipients as $recipient) {
-                Mail::Send(
-                    (int) $this->context->language->id, // Language ID
-                    'order_confirmation', // Template name
-                    $subject, // Email subject
-                    array(
-                        '{order_reference}' => $order->reference,
-                        '{customer_name}' => $customerName,
-                        '{total_amount}' => $totalAmount
-                    ), // Template variables
-                    $recipient, // Recipient email address
-                    null, // Recipient name (optional)
-                    null, // From email address
-                    null, // From name
-                    null, // Attachments (optional)
-                    null, // BCC (optional)
-                    dirname(__FILE__) . '/mails' // Mail template directory
-                );
+                $recipient = trim($recipient); // Remove extra spaces
+                if (filter_var($recipient, FILTER_VALIDATE_EMAIL)) {
+                    $this->sendOrderEmail($recipient, $subject, $body, $order, $customerName, $totalAmount);
+                } else {
+                    $this->errors[] = $this->l("Invalid email address: $recipient");
+                }
             }
         }
     }
+
+    private function sendOrderEmail($recipient, $subject, $body, $order, $customerName, $totalAmount)
+    {
+        // Send email using the PrestaShop Mail class
+        if (!Mail::Send(
+            (int) $this->context->language->id, // Language ID
+            'order_confirmation', // Template name
+            $subject, // Email subject
+            array(
+                '{order_reference}' => $order->reference,
+                '{customer_name}' => $customerName,
+                '{total_amount}' => $totalAmount
+            ), // Template variables
+            $recipient, // Recipient email address
+            null, // Recipient name (optional)
+            null, // From email address
+            null, // From name
+            null, // Attachments (optional)
+            null, // BCC (optional)
+            dirname(__FILE__) . '/mails' // Mail template directory
+        )) {
+            $this->errors[] = $this->l('Failed to send email to: ' . $recipient);
+        }
+    }
 }
-s
