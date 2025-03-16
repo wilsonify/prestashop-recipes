@@ -31,7 +31,10 @@ For Windows users, **WAMP** is a great choice. It includes:
 - **phpMyAdmin** for easy database management
 
 ## How It Works
-The WAMP environment functions as a medium-sized server with the essential modules needed to run web applications efficiently. While not as powerful as full-scale production servers, it provides everything necessary for local development, testing, and customization of PrestaShop.
+The WAMP environment functions as a medium-sized server with the essential modules needed to run web applications efficiently. 
+
+While not as powerful as full-scale production servers, 
+it provides everything necessary for local development, testing, and customization of PrestaShop.
 
 ### Steps to Set Up WAMP:
 1. Download WAMP from [wampserver.com](http://www.wampserver.com/).
