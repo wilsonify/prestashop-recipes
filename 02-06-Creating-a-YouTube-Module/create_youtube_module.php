@@ -1,7 +1,40 @@
 <?php
+
 // Define the module name and folder paths
 $moduleName = 'youtube';
 $moduleDir = __DIR__ . '/modules/' . $moduleName;
+
+// Function to create directories
+function createDirectories($directories)
+{
+    foreach ($directories as $dir) {
+        if (!file_exists($dir)) {
+            if (!mkdir($dir, 0755, true)) {
+                echo "Error: Could not create directory $dir\n";
+                return false;
+            }
+            echo "Created directory: $dir\n";
+        }
+    }
+    return true;
+}
+
+// Function to create a PHP file with content
+function createPhpFile($filePath, $content)
+{
+    if (file_exists($filePath)) {
+        echo "Warning: $filePath already exists, skipping file creation.\n";
+        return false;
+    }
+
+    if (file_put_contents($filePath, $content) === false) {
+        echo "Error: Failed to create file $filePath\n";
+        return false;
+    }
+
+    echo "Created file: $filePath\n";
+    return true;
+}
 
 // 1. Create the Module Folder Structure
 $directories = [
@@ -9,12 +42,8 @@ $directories = [
     $moduleDir . '/views/templates/hook',
 ];
 
-// Create directories
-foreach ($directories as $dir) {
-    if (!file_exists($dir)) {
-        mkdir($dir, 0777, true);
-        echo "Created directory: $dir\n";
-    }
+if (!createDirectories($directories)) {
+    exit; // Exit script if folder creation fails
 }
 
 // 2. Create the Main Module PHP File (youtube.php)
@@ -71,9 +100,7 @@ class Youtube extends Module
         $videoId = Configuration::get('YOUTUBE_VIDEO_ID');
 
         if ($videoId) {
-            return '<div class="youtube-video">
-                        <iframe width="560" height="315" src="https://www.youtube.com/embed/' . $videoId . '" frameborder="0" allowfullscreen></iframe>
-                    </div>';
+            return $this->display(__FILE__, 'views/templates/hook/displayHome.tpl');
         }
 
         return ''; // No video to display if the video ID is empty
@@ -81,8 +108,9 @@ class Youtube extends Module
 }
 PHP;
 
-file_put_contents($moduleDir . '/youtube.php', $modulePhpContent);
-echo "Created youtube.php file in $moduleDir\n";
+if (!createPhpFile($moduleDir . '/youtube.php', $modulePhpContent)) {
+    exit;
+}
 
 // 3. Create the Configuration XML File (config.xml)
 $configXmlContent = <<<'XML'
@@ -97,8 +125,9 @@ $configXmlContent = <<<'XML'
 </module>
 XML;
 
-file_put_contents($moduleDir . '/config.xml', $configXmlContent);
-echo "Created config.xml file in $moduleDir\n";
+if (!createPhpFile($moduleDir . '/config.xml', $configXmlContent)) {
+    exit;
+}
 
 // 4. Create Template File (displayHome.tpl)
 $templateContent = <<<'HTML'
@@ -107,14 +136,24 @@ $templateContent = <<<'HTML'
 </div>
 HTML;
 
-file_put_contents($moduleDir . '/views/templates/hook/displayHome.tpl', $templateContent);
-echo "Created displayHome.tpl template file in $moduleDir/views/templates/hook\n";
+if (!createPhpFile($moduleDir . '/views/templates/hook/displayHome.tpl', $templateContent)) {
+    exit;
+}
 
 // 5. Add a logo image (logo.png) for the module (optional)
 $logoImagePath = $moduleDir . '/logo.png';
-// Add a basic logo for the module (you can replace this with a custom logo)
-imagepng(imagecreatetruecolor(100, 100), $logoImagePath);
-echo "Created placeholder logo.png file in $moduleDir\n";
+if (!file_exists($logoImagePath)) {
+    $logoImage = imagecreatetruecolor(100, 100);
+    $white = imagecolorallocate($logoImage, 255, 255, 255);
+    imagefill($logoImage, 0, 0, $white);
+    imagestring($logoImage, 5, 10, 40, 'YouTube', $black = imagecolorallocate($logoImage, 0, 0, 0));
+    imagepng($logoImage, $logoImagePath);
+    imagedestroy($logoImage);
+    echo "Created placeholder logo.png file in $moduleDir\n";
+} else {
+    echo "Logo image already exists at $logoImagePath\n";
+}
 
 // 6. Output success message
 echo "Module '$moduleName' has been successfully created and is ready for installation!\n";
+
