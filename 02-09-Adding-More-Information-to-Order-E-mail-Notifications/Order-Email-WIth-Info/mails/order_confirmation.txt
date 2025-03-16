@@ -1,0 +1,7 @@
+Hello {customer_name},
+
+Your order {order_reference} has been confirmed.
+
+Total amount to be paid: {total_amount}
+
+Thank you for shopping with us!
