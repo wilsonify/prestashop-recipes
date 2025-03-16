@@ -7,15 +7,31 @@ MODULE_DIR="$PRESTASHOP_DIR/modules/$MODULE_NAME" # Full path to module director
 MODULE_PHP="$MODULE_DIR/$MODULE_NAME.php"  # Main PHP file
 MODULE_ICON="$MODULE_DIR/logo.png"         # Icon for the module (16x16 pixels)
 MODULE_XML="$MODULE_DIR/config.xml"        # Config XML file
+LOG_FILE="/var/log/prestashop_module_creation.log"  # Log file for tracking
+
+# Function to log messages with timestamp
+log_message() {
+    echo "$(date +%Y-%m-%d\ %H:%M:%S) - $1" | tee -a $LOG_FILE
+}
+
+# Function to create a directory and handle errors
+create_dir() {
+    if [ ! -d "$1" ]; then
+        mkdir -p "$1" && log_message "Created directory: $1"
+    else
+        log_message "Directory already exists: $1"
+    fi
+}
 
 # Step 1: Create the Module Folder
-echo "Creating module folder: $MODULE_DIR"
-mkdir -p "$MODULE_DIR"
+log_message "Creating module folder: $MODULE_DIR"
+create_dir "$MODULE_DIR"
 
 # Step 2: Create the Main PHP File
-echo "Creating the main PHP file: $MODULE_PHP"
+log_message "Creating the main PHP file: $MODULE_PHP"
 
-cat <<EOL > "$MODULE_PHP"
+if [ ! -f "$MODULE_PHP" ]; then
+    cat <<EOL > "$MODULE_PHP"
 <?php
 if (!defined('_PS_VERSION_')) {
     exit;
@@ -25,46 +41,51 @@ class HelloWorld extends Module
 {
     public function __construct()
     {
-        $this->name = '$MODULE_NAME';
-        $this->tab = 'front_office_features';
-        $this->version = '1.0.0';
-        $this->author = 'Your Name';
-        $this->need_instance = 0;
+        \$this->name = '$MODULE_NAME';
+        \$this->tab = 'front_office_features';
+        \$this->version = '1.0.0';
+        \$this->author = 'Your Name';
+        \$this->need_instance = 0;
 
         parent::__construct();
 
-        $this->displayName = $this->l('Hello World');
-        $this->description = $this->l('Displays Hello World on the site header.');
+        \$this->displayName = \$this->l('Hello World');
+        \$this->description = \$this->l('Displays Hello World on the site header.');
     }
 
     public function install()
     {
-        return parent::install() && $this->registerHook('displayHeader');
+        return parent::install() && \$this->registerHook('displayHeader');
     }
 
-    public function hookDisplayHeader($params)
+    public function hookDisplayHeader(\$params)
     {
         // Display "Hello World" in the header
-        $this->context->controller->addCSS($this->_path.'views/css/helloworld.css', 'all');
-        $this->context->smarty->assign('helloworld_message', 'Hello World');
-        return $this->display(__FILE__, 'views/templates/hook/helloworld.tpl');
+        \$this->context->controller->addCSS(\$this->_path.'views/css/helloworld.css', 'all');
+        \$this->context->smarty->assign('helloworld_message', 'Hello World');
+        return \$this->display(__FILE__, 'views/templates/hook/helloworld.tpl');
     }
 }
 EOL
-
-echo "Main PHP file created successfully."
+    log_message "Main PHP file created successfully."
+else
+    log_message "Main PHP file already exists: $MODULE_PHP"
+fi
 
 # Step 3: Create the Icon File (16x16 pixels)
-echo "Creating a placeholder icon: $MODULE_ICON"
-# Create a basic 16x16 pixel PNG icon (you can replace this with your own icon)
-convert -size 16x16 xc:white -gravity center -draw "text 0,0 'HW'" "$MODULE_ICON"
-
-echo "Icon file created successfully."
+log_message "Creating a placeholder icon: $MODULE_ICON"
+# Check if the icon file exists before creating it
+if [ ! -f "$MODULE_ICON" ]; then
+    convert -size 16x16 xc:white -gravity center -draw "text 0,0 'HW'" "$MODULE_ICON" && log_message "Icon file created successfully."
+else
+    log_message "Icon file already exists: $MODULE_ICON"
+fi
 
 # Step 4: Create the config.xml File
-echo "Creating config.xml file: $MODULE_XML"
+log_message "Creating config.xml file: $MODULE_XML"
 
-cat <<EOL > "$MODULE_XML"
+if [ ! -f "$MODULE_XML" ]; then
+    cat <<EOL > "$MODULE_XML"
 <?xml version="1.0" encoding="UTF-8" ?>
 <module>
     <name>$MODULE_NAME</name>
@@ -78,26 +99,34 @@ cat <<EOL > "$MODULE_XML"
     <need_instance>0</need_instance>
 </module>
 EOL
-
-echo "Config.xml file created successfully."
+    log_message "Config.xml file created successfully."
+else
+    log_message "Config.xml file already exists: $MODULE_XML"
+fi
 
 # Step 5: Create the Template File
-echo "Creating the template file for displaying 'Hello World'"
+log_message "Creating the template file for displaying 'Hello World'"
 
-mkdir -p "$MODULE_DIR/views/templates/hook"
-cat <<EOL > "$MODULE_DIR/views/templates/hook/helloworld.tpl"
+create_dir "$MODULE_DIR/views/templates/hook"
+TEMPLATE_FILE="$MODULE_DIR/views/templates/hook/helloworld.tpl"
+if [ ! -f "$TEMPLATE_FILE" ]; then
+    cat <<EOL > "$TEMPLATE_FILE"
 <div style="text-align: center; font-size: 20px; color: #4CAF50;">
     <strong>{$helloworld_message}</strong>
 </div>
 EOL
-
-echo "Template file created successfully."
+    log_message "Template file created successfully."
+else
+    log_message "Template file already exists: $TEMPLATE_FILE"
+fi
 
 # Step 6: Create the CSS File (Optional)
-echo "Creating the CSS file to style the 'Hello World' message"
+log_message "Creating the CSS file to style the 'Hello World' message"
 
-mkdir -p "$MODULE_DIR/views/css"
-cat <<EOL > "$MODULE_DIR/views/css/helloworld.css"
+create_dir "$MODULE_DIR/views/css"
+CSS_FILE="$MODULE_DIR/views/css/helloworld.css"
+if [ ! -f "$CSS_FILE" ]; then
+    cat <<EOL > "$CSS_FILE"
 div {
     margin-top: 20px;
     font-family: Arial, sans-serif;
@@ -105,8 +134,10 @@ div {
     color: #333;
 }
 EOL
-
-echo "CSS file created successfully."
+    log_message "CSS file created successfully."
+else
+    log_message "CSS file already exists: $CSS_FILE"
+fi
 
 # Final message
-echo "Hello World module created successfully at $MODULE_DIR"
+log_message "Hello World module created successfully at $MODULE_DIR"
