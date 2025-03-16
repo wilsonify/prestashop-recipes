@@ -1,7 +1,47 @@
 <?php
+
 // Define the module name and folder paths
 $moduleName = 'yourmodule';
 $moduleDir = __DIR__ . '/modules/' . $moduleName;
+
+// Function to create directories with proper permissions and error handling
+function createDirectories($directories)
+{
+    foreach ($directories as $dir) {
+        if (!file_exists($dir)) {
+            // Try to create directory with 0755 permissions
+            if (!mkdir($dir, 0755, true)) {
+                logError("Error: Could not create directory $dir");
+                return false;
+            }
+            echo "Created directory: $dir\n";
+        }
+    }
+    return true;
+}
+
+// Function to create files with content and error handling
+function createFile($filePath, $content)
+{
+    if (file_exists($filePath)) {
+        echo "Warning: $filePath already exists, skipping file creation.\n";
+        return false;
+    }
+
+    if (file_put_contents($filePath, $content) === false) {
+        logError("Error: Failed to create file $filePath");
+        return false;
+    }
+
+    echo "Created file: $filePath\n";
+    return true;
+}
+
+// Function to log errors to a log file for debugging purposes
+function logError($message)
+{
+    file_put_contents(__DIR__ . '/error_log.txt', date('Y-m-d H:i:s') . ' - ' . $message . PHP_EOL, FILE_APPEND);
+}
 
 // 1. Create the Module Folder Structure
 $directories = [
@@ -9,12 +49,8 @@ $directories = [
     $moduleDir . '/views/templates/hook',
 ];
 
-// Create directories
-foreach ($directories as $dir) {
-    if (!file_exists($dir)) {
-        mkdir($dir, 0777, true);
-        echo "Created directory: $dir\n";
-    }
+if (!createDirectories($directories)) {
+    exit; // Exit script if folder creation fails
 }
 
 // 2. Create the Main Module PHP File (yourmodule.php)
@@ -42,12 +78,14 @@ class YourModule extends Module
 
     public function install()
     {
-        // Call the parent install method
-        if (!parent::install()) {
+        if (!parent::install() || !$this->executeInstallSQL()) {
             return false;
         }
+        return true;
+    }
 
-        // Execute SQL queries from install.sql
+    private function executeInstallSQL()
+    {
         $sqlFile = dirname(__FILE__) . '/' . self::INSTALL_SQL_FILE;
         if (file_exists($sqlFile)) {
             $sqlQueries = file_get_contents($sqlFile);
@@ -58,10 +96,14 @@ class YourModule extends Module
                     // Replace PREFIX_ with actual database prefix
                     $query = str_replace('PREFIX_', _DB_PREFIX_, $query);
                     if (!Db::getInstance()->execute($query)) {
+                        logError('SQL execution failed: ' . $query);
                         return false; // If any query fails, return false
                     }
                 }
             }
+        } else {
+            logError('SQL file not found: ' . $sqlFile);
+            return false;
         }
 
         return true;
@@ -69,14 +111,14 @@ class YourModule extends Module
 
     public function uninstall()
     {
-        // Clean up by dropping the custom table
         if (!parent::uninstall()) {
             return false;
         }
 
-        // Drop custom table
+        // Drop custom table (example of clean-up)
         $sql = 'DROP TABLE IF EXISTS `' . _DB_PREFIX_ . 'my_custom_table`';
         if (!Db::getInstance()->execute($sql)) {
+            logError('Failed to drop table during uninstallation: ' . $sql);
             return false;
         }
 
@@ -85,8 +127,9 @@ class YourModule extends Module
 }
 PHP;
 
-file_put_contents($moduleDir . '/yourmodule.php', $modulePhpContent);
-echo "Created yourmodule.php file in $moduleDir\n";
+if (!createFile($moduleDir . '/yourmodule.php', $modulePhpContent)) {
+    exit;
+}
 
 // 3. Create the SQL File (install.sql)
 $installSqlContent = <<<'SQL'
@@ -104,10 +147,11 @@ INSERT INTO `PREFIX_my_custom_table` (`name`, `description`) VALUES
 ('Sample Data 2', 'This is the second sample data entry');
 SQL;
 
-file_put_contents($moduleDir . '/install.sql', $installSqlContent);
-echo "Created install.sql file in $moduleDir\n";
+if (!createFile($moduleDir . '/install.sql', $installSqlContent)) {
+    exit;
+}
 
-// 4. Create the Template File (displayHome.tpl) (optional)
+// 4. Create Template File (displayHome.tpl) (optional)
 $templateContent = <<<'HTML'
 <div class="yourmodule-content">
     <h3>Your Custom Module</h3>
@@ -115,14 +159,23 @@ $templateContent = <<<'HTML'
 </div>
 HTML;
 
-file_put_contents($moduleDir . '/views/templates/hook/displayHome.tpl', $templateContent);
-echo "Created displayHome.tpl template file in $moduleDir/views/templates/hook\n";
+if (!createFile($moduleDir . '/views/templates/hook/displayHome.tpl', $templateContent)) {
+    exit;
+}
 
 // 5. Add a logo image (logo.png) for the module (optional)
 $logoImagePath = $moduleDir . '/logo.png';
-// Add a basic logo for the module (you can replace this with a custom logo)
-imagepng(imagecreatetruecolor(100, 100), $logoImagePath);
-echo "Created placeholder logo.png file in $moduleDir\n";
+if (!file_exists($logoImagePath)) {
+    $logoImage = imagecreatetruecolor(100, 100);
+    $white = imagecolorallocate($logoImage, 255, 255, 255);
+    imagefill($logoImage, 0, 0, $white);
+    imagestring($logoImage, 5, 10, 40, 'YourModule', $black = imagecolorallocate($logoImage, 0, 0, 0));
+    imagepng($logoImage, $logoImagePath);
+    imagedestroy($logoImage);
+    echo "Created placeholder logo.png file in $moduleDir\n";
+} else {
+    echo "Logo image already exists at $logoImagePath\n";
+}
 
 // 6. Output success message
 echo "Module '$moduleName' has been successfully created and is ready for installation!\n";
