@@ -3,6 +3,44 @@
 $moduleName = 'orderemail';
 $moduleDir = __DIR__ . '/modules/' . $moduleName;
 
+// Function to create directories with proper permissions and error handling
+function createDirectories($directories)
+{
+    foreach ($directories as $dir) {
+        if (!file_exists($dir)) {
+            if (!mkdir($dir, 0755, true)) {
+                logError("Error: Could not create directory $dir");
+                return false;
+            }
+            echo "Created directory: $dir\n";
+        }
+    }
+    return true;
+}
+
+// Function to create files with content and error handling
+function createFile($filePath, $content)
+{
+    if (file_exists($filePath)) {
+        echo "Warning: $filePath already exists, skipping file creation.\n";
+        return false;
+    }
+
+    if (file_put_contents($filePath, $content) === false) {
+        logError("Error: Failed to create file $filePath");
+        return false;
+    }
+
+    echo "Created file: $filePath\n";
+    return true;
+}
+
+// Function to log errors to a log file for debugging purposes
+function logError($message)
+{
+    file_put_contents(__DIR__ . '/error_log.txt', date('Y-m-d H:i:s') . ' - ' . $message . PHP_EOL, FILE_APPEND);
+}
+
 // 1. Create the Module Folder Structure
 $directories = [
     $moduleDir,
@@ -10,12 +48,8 @@ $directories = [
     $moduleDir . '/views/templates/hook',
 ];
 
-// Create directories
-foreach ($directories as $dir) {
-    if (!file_exists($dir)) {
-        mkdir($dir, 0777, true);
-        echo "Created directory: $dir\n";
-    }
+if (!createDirectories($directories)) {
+    exit; // Exit script if folder creation fails
 }
 
 // 2. Create the Main Module PHP File (orderemail.php)
@@ -103,8 +137,9 @@ class OrderEmail extends Module
 }
 PHP;
 
-file_put_contents($moduleDir . '/orderemail.php', $modulePhpContent);
-echo "Created orderemail.php file in $moduleDir\n";
+if (!createFile($moduleDir . '/orderemail.php', $modulePhpContent)) {
+    exit;
+}
 
 // 3. Create the Email Template (order_confirmation.html)
 $emailTemplateHtml = <<<'HTML'
@@ -121,8 +156,9 @@ $emailTemplateHtml = <<<'HTML'
 </html>
 HTML;
 
-file_put_contents($moduleDir . '/mails/order_confirmation.html', $emailTemplateHtml);
-echo "Created order_confirmation.html template in $moduleDir/mails\n";
+if (!createFile($moduleDir . '/mails/order_confirmation.html', $emailTemplateHtml)) {
+    exit;
+}
 
 // 4. Create the Plain Text Email Template (order_confirmation.txt)
 $emailTemplateText = <<<'TEXT'
@@ -133,17 +169,22 @@ Your order {order_reference} has been confirmed.
 Thank you for shopping with us!
 TEXT;
 
-file_put_contents($moduleDir . '/mails/order_confirmation.txt', $emailTemplateText);
-echo "Created order_confirmation.txt template in $moduleDir/mails\n";
+if (!createFile($moduleDir . '/mails/order_confirmation.txt', $emailTemplateText)) {
+    exit;
+}
 
 // 5. Create the Module Logo (logo.gif or logo.png)
 $logoImagePath = $moduleDir . '/logo.gif';
 $img = imagecreatetruecolor(100, 100);
 $white = imagecolorallocate($img, 255, 255, 255);
 imagefilledrectangle($img, 0, 0, 100, 100, $white);
+$black = imagecolorallocate($img, 0, 0, 0);
+imagestring($img, 5, 10, 40, 'OrderEmail', $black);
 imagegif($img, $logoImagePath);
+imagedestroy($img);
 echo "Created placeholder logo.gif in $moduleDir\n";
 
 // 6. Output success message
 echo "Module '$moduleName' has been successfully created and is ready for installation!\n";
+
 ?>
