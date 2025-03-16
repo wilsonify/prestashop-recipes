@@ -1,4 +1,5 @@
 <?php
+
 if (!defined('_PS_VERSION_')) {
     exit;
 }
@@ -10,8 +11,9 @@ class Helloworld extends Module
     {
         $this->name = 'helloworld';
         $this->tab = 'front_office_features';
-        $this->version = '1.0.0';
+        $this->version = '1.1.0';
         $this->author = 'Your Name';
+        $this->need_instance = 0;
 
         // Add the text variable for storing the module text
         $this->text = Configuration::get('HELLOWORLD_TEXT'); // Retrieve text from the database
@@ -26,12 +28,21 @@ class Helloworld extends Module
     // Installation method to register the module and hook
     public function install()
     {
-        return parent::install() && $this->registerHook('displayTop');
+        if (parent::install() && $this->registerHook('displayTop')) {
+            // Set a default value for HELLOWORLD_TEXT if it's not already in the database
+            if (!Configuration::get('HELLOWORLD_TEXT')) {
+                Configuration::updateValue('HELLOWORLD_TEXT', 'Hello, World!');
+            }
+            return true;
+        }
+
+        return false;
     }
 
     // Uninstallation method to clean up configuration settings
     public function uninstall()
     {
+        // Clean up configuration settings
         Configuration::deleteByName('HELLOWORLD_TEXT');
         return parent::uninstall();
     }
@@ -39,26 +50,63 @@ class Helloworld extends Module
     // Display method for the front-end (hook to display the custom text)
     public function hookDisplayTop($params)
     {
-        return '<p>' . $this->text . '</p>'; // Display the custom text in the top section
+        return '<p>' . Tools::safeOutput($this->text) . '</p>'; // Display the custom text in the top section
     }
 
-    // Configure method for the back-office settings page
+    // Configuration form method for the back-office settings page
     public function getContent()
     {
-        // Check if the form is submitted to update the custom text
+        $output = '';
+
+        // Handle form submission and validate input
         if (Tools::isSubmit('submit_helloworld')) {
             $text = Tools::getValue('HELLOWORLD_TEXT');
-            Configuration::updateValue('HELLOWORLD_TEXT', $text); // Save the new custom text in the database
+            // Validate input to prevent XSS or invalid data
+            if (!Validate::isString($text) || strlen($text) > 255) {
+                $output .= $this->displayError($this->l('Invalid text. Please make sure it is a valid string and not too long.'));
+            } else {
+                Configuration::updateValue('HELLOWORLD_TEXT', $text);
+                $output .= $this->displayConfirmation($this->l('Settings updated successfully.'));
+            }
         }
 
         // Create the configuration form
-        $output = '<form method="post" action="' . $_SERVER['REQUEST_URI'] . '">';
-        $output .= '<label for="HELLOWORLD_TEXT">' . $this->l('Custom Text: ') . '</label>';
-        $output .= '<input type="text" name="HELLOWORLD_TEXT" value="' . $this->text . '" />';
-        $output .= '<input type="submit" name="submit_helloworld" value="' . $this->l('Save') . '" />';
-        $output .= '</form>';
+        $helper = new HelperForm();
+        $helper->show_toolbar = false;
+        $helper->identifier = $this->name;
+        $helper->submit_action = 'submit_helloworld';
+        $helper->fields_value['HELLOWORLD_TEXT'] = Tools::getValue('HELLOWORLD_TEXT', $this->text);
 
-        return $output; // Return the form HTML
+        $helper->tpl_vars = array(
+            'fields_value' => $helper->fields_value,
+            'currentIndex' => AdminController::$currentIndex,
+            'token' => Tools::getAdminTokenLite('AdminModules'),
+        );
+
+        $output .= $helper->generateForm(array(
+            array(
+                'form' => array(
+                    'legend' => array(
+                        'title' => $this->l('Configuration'),
+                        'icon' => 'icon-cogs'
+                    ),
+                    'input' => array(
+                        array(
+                            'type' => 'text',
+                            'label' => $this->l('Custom Text:'),
+                            'name' => 'HELLOWORLD_TEXT',
+                            'size' => 40,
+                            'required' => true,
+                        ),
+                    ),
+                    'submit' => array(
+                        'title' => $this->l('Save'),
+                        'class' => 'btn btn-default pull-right'
+                    )
+                )
+            )
+        ));
+
+        return $output;
     }
 }
-
