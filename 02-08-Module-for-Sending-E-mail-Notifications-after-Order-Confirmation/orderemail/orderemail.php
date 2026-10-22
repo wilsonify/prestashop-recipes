@@ -39,6 +39,7 @@ class OrderEmail extends Module {
 	public function hookdisplayOrderConfirmation($params)
 	{
 		$email = Configuration::get('emails');
+		$customer = $this->context->customer;
 		
 		return Mail::Send(
 			$this->context->language->id,
