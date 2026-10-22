@@ -456,7 +456,7 @@ function findCombination()
 
 	//verify if this combinaison is the same that the user's choice
 	if (typeof combinationsHashSet !== 'undefined') {
-		var combination = combinationsHashSet[choice.sort().join('-')];
+		var combination = combinationsHashSet[choice.sort(function(a, b) { return a - b; }).join('-')];
 
 		if (combination)
 		{
@@ -1004,7 +1004,7 @@ function refreshProductImages(id_product_attribute)
 		});
 
 		if (typeof combinationsHashSet !== 'undefined') {
-			var combination = combinationsHashSet[choice.sort().join('-')];
+			var combination = combinationsHashSet[choice.sort(function(a, b) { return a - b; }).join('-')];
 			if(combination) {
 				//show the large image in relation to the selected combination
 				if (combination['image'] && combination['image'] != -1)
