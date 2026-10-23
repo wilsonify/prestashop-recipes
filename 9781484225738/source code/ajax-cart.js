@@ -125,7 +125,7 @@ $(document).ready(function(){
 function saveCustomization()
 {
 	$('#quantityBackup').val($('#quantity_wanted').val());
-	customAction = $('#customizationForm').attr('action');
+	var customAction = $('#customizationForm').attr('action');
 	$('body select[id^="group_"]').each(function() {
 		customAction = customAction.replace(new RegExp(this.id + '=\\d+'), this.id +'=' + this.value);
 	});
@@ -628,7 +628,7 @@ var ajaxCart = {
 		{
 			$('.vouchers tbody').html('');
 
-			for (i=0;i<jsonData.discounts.length;i++)
+			for (var i =0;i<jsonData.discounts.length;i++)
 			{
 				if (parseFloat(jsonData.discounts[i].price_float) > 0)
 				{
@@ -727,7 +727,7 @@ var ajaxCart = {
 						// Customized product
 						if (jsonProduct.hasCustomizedDatas)
 						{
-							customizationFormatedDatas = ajaxCart.displayNewCustomizedDatas(jsonProduct);
+							var customizationFormatedDatas = ajaxCart.displayNewCustomizedDatas(jsonProduct);
 							if (!$('ul[data-id="customization_' + domIdProductAttribute + '"]').length)
 							{
 								if (jsonProduct.hasAttributes)
@@ -770,7 +770,7 @@ var ajaxCart = {
 
 		$(product.customizedDatas).each(function(){
 			var done = 0;
-			customizationId = parseInt(this.customizationId);
+			var customizationId = parseInt(this.customizationId);
 			productAttributeId = typeof(product.idCombination) == 'undefined' ? 0 : parseInt(product.idCombination);
 			content += '<li name="customization"><div class="deleteCustomizableProduct" data-id="deleteCustomizableProduct_' + customizationId + '_' + productId + '_' + (productAttributeId ?  productAttributeId : '0') + '"><a rel="nofollow" class="ajax_cart_block_remove_link" href="' + baseUri + '?controller=cart&amp;delete=1&amp;id_product=' + productId + '&amp;ipa=' + productAttributeId + '&amp;id_customization=' + customizationId + '&amp;token=' + static_token + '"></a></div>';
 
@@ -871,7 +871,7 @@ var ajaxCart = {
 		$('.ajax_cart_total').text($.trim(jsonData.productTotal));
 
 		if (typeof hasDeliveryAddress == 'undefined')
-			hasDeliveryAddress = false;
+			var hasDeliveryAddress = false;
 
 		if (parseFloat(jsonData.shippingCostFloat) > 0)
 			$('.ajax_cart_shipping_cost').text(jsonData.shippingCost).parent().find('.unvisible').show();
