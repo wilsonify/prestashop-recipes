@@ -34,7 +34,7 @@ var firstTime = true;
 if (typeof customizationFields !== 'undefined' && customizationFields)
 {
 	var customizationFieldsBk = customizationFields;
-	customizationFields = [];
+	var customizationFields = [];
 	var j = 0;
 	for (var i = 0; i < customizationFieldsBk.length; ++i)
 	{
@@ -47,7 +47,7 @@ if (typeof customizationFields !== 'undefined' && customizationFields)
 
 if (typeof combinationImages !== 'undefined' && combinationImages)
 {
-	combinationImagesJS = [];
+	var combinationImagesJS = [];
 	combinationImagesJS[0] = [];
 	var k = 0;
 	for (var i in combinationImages)
@@ -72,13 +72,13 @@ if (typeof combinationImages !== 'undefined' && combinationImages)
 		   array_values.push(combinationImagesJS[0][key]);
 	   combinationImagesJS[0] = array_values;
 	}
-	combinationImages = combinationImagesJS;
+	var combinationImages = combinationImagesJS;
 }
 
 if (typeof combinations !== 'undefined' && combinations)
 {
-	combinationsJS = [];
-	combinationsHashSet = {};
+	var combinationsJS = [];
+	var combinationsHashSet = {};
 	var k = 0;
 	for (var i in combinations)
 	{
@@ -111,7 +111,7 @@ if (typeof combinations !== 'undefined' && combinations)
 
 		k++;
 	}
-	combinations = combinationsJS;
+	var combinations = combinationsJS;
 }
 /* */
 $(document).ready(function()
@@ -350,10 +350,10 @@ if (typeof(contentOnly) !== 'undefined' && contentOnly)
 // The button to increment the product value
 $(document).on('click', '.product_quantity_up', function(e){
 	e.preventDefault();
-	fieldName = $(this).data('field-qty');
+	var fieldName = $(this).data('field-qty');
 	var currentVal = parseInt($('input[name='+fieldName+']').val());
 	if (!allowBuyWhenOutOfStock && quantityAvailable > 0)
-		quantityAvailableT = quantityAvailable;
+		var quantityAvailableT = quantityAvailable;
 	else
 		quantityAvailableT = 100000000;
 	if (!isNaN(currentVal) && currentVal < quantityAvailableT)
@@ -473,7 +473,7 @@ function findCombination()
 			$('#idCombination').val(combination['idCombination']);
 
 			//get the data of product with these attributes
-			quantityAvailable = combination['quantity'];
+			var quantityAvailable = combination['quantity'];
 			selectedCombination['price'] = combination['price'];
 			selectedCombination['unit_price'] = combination['unit_price'];
 			selectedCombination['specific_price'] = combination['specific_price'];
@@ -732,8 +732,8 @@ function updatePrice()
 	// Apply Tax if necessary
 	if (noTaxForThisProduct || customerGroupWithoutTax)
 	{
-		basePriceDisplay = basePriceWithoutTax;
-		priceWithDiscountsDisplay = priceWithDiscountsWithoutTax;
+		var basePriceDisplay = basePriceWithoutTax;
+		var priceWithDiscountsDisplay = priceWithDiscountsWithoutTax;
 	}
 	else
 	{
@@ -784,8 +784,8 @@ function updatePrice()
 	{
 		if (unit_impact)
 		{
-			baseUnitPrice = productBasePriceTaxExcl / productUnitPriceRatio;
-			unit_price = baseUnitPrice + unit_impact;
+			var baseUnitPrice = productBasePriceTaxExcl / productUnitPriceRatio;
+			var unit_price = baseUnitPrice + unit_impact;
 
 			if (!noTaxForThisProduct || !customerGroupWithoutTax)
 				unit_price = unit_price * (taxRate/100 + 1);
@@ -848,7 +848,7 @@ function updatePrice()
 	// Update display of Green Tax
 	if (default_eco_tax)
 	{
-		ecotax = default_eco_tax;
+		var ecotax = default_eco_tax;
 
 		// If the default product ecotax is overridden by the combination
 		if (combination.ecotax)
@@ -1068,7 +1068,7 @@ function checkMinimalQuantity(minimal_quantity)
 
 function colorPickerClick(elt)
 {
-	id_attribute = $(elt).attr('id').replace('color_', '');
+	var id_attribute = $(elt).attr('id').replace('color_', '');
 	$(elt).parent().parent().children().removeClass('selected');
 	$(elt).fadeTo('fast', 1, function(){
 	$(this).fadeTo('fast', 0, function(){
@@ -1084,7 +1084,7 @@ function colorPickerClick(elt)
 function getProductAttribute()
 {
 	// get every attributes values
-	request = '';
+	var request = '';
 	//create a temporary 'tab_attributes' array containing the choices of the customer
 	var tab_attributes = [];
 	var radio_inputs = parseInt($('#attributes .checked > input[type=radio]').length);
@@ -1112,7 +1112,7 @@ function getProductAttribute()
 	if ($('#customizationForm').length)
 	{
 		// set ipa to the customization form
-		customAction = $('#customizationForm').attr('action');
+		var customAction = $('#customizationForm').attr('action');
 		if (customAction.indexOf('#') != -1)
 			customAction = customAction.substring(0, customAction.indexOf('#'));
 		$('#customizationForm').attr('action', customAction + request);
@@ -1131,9 +1131,9 @@ function checkUrl()
 		if (url.indexOf('#/') != -1)
 		{
 			// get the params to fill from a "normal" url
-			params = url.substring(url.indexOf('#') + 1, url.length);
-			tabParams = params.split('/');
-			tabValues = [];
+			var params = url.substring(url.indexOf('#') + 1, url.length);
+			var tabParams = params.split('/');
+			var tabValues = [];
 			if (tabParams[0] == '')
 				tabParams.shift();
 
@@ -1147,7 +1147,7 @@ function checkUrl()
 			// fill html with values
 			$('.color_pick').removeClass('selected').parent().parent().children().removeClass('selected');
 
-			count = 0;
+			var count = 0;
 			for (var z in tabValues)
 				for (var a in attributesCombinations)
 					if (attributesCombinations[a]['group'] === decodeURIComponent(tabValues[z][1])
