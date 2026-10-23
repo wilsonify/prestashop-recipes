@@ -315,7 +315,7 @@ var ajaxCart = {
 		
 		// Product Box Custom Form
 		$('#quantityBackup').val($('#quantity_wanted').val());
-			customAction = $('#customizationForm').attr('action');
+			var customAction = $('#customizationForm').attr('action');
 			$('body select[id^="group_"]').each(function() {
 				customAction = customAction.replace(new RegExp(this.id + '=\\d+'), this.id +'=' + this.value);
 			});
@@ -537,7 +537,7 @@ var ajaxCart = {
 
 				//try to know if the current product is still in the new list
 				var stayInTheCart = false;
-				for (aProduct in jsonData.products)
+				for (var aProduct in jsonData.products)
 				{
 					//we've called the variable aProduct because IE6 bug if this variable is called product
 					//if product has attributes
