@@ -366,7 +366,7 @@ $(document).on('click', '.product_quantity_up', function(e){
  // The button to decrement the product value
 $(document).on('click', '.product_quantity_down', function(e){
 	e.preventDefault();
-	fieldName = $(this).data('field-qty');
+	var fieldName = $(this).data('field-qty');
 	var currentVal = parseInt($('input[name='+fieldName+']').val());
 	if (!isNaN(currentVal) && currentVal > 1)
 		$('input[name='+fieldName+']').val(currentVal - 1).trigger('keyup');
