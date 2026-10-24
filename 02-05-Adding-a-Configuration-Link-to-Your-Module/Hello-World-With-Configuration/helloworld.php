@@ -1,9 +1,10 @@
 <?php
-if(!defined('_PS_VERSION_'))
+if(!defined('_PS_VERSION_')) {
 	exit;
-	
+}
+
 class HelloWorld extends Module {
-	
+
 	public function __construct()
    {
 		$this->name = 'helloworld';
@@ -12,36 +13,38 @@ class HelloWorld extends Module {
 		$this->text = 'Hello World';
 		$this->author = 'Arnaldo Perez Castano';
 		$this->need_instance = 0;
-		$this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_); 
+		$this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);
 		$this->bootstrap = true;
-	 
+
 		parent::__construct();
-	 
+
 		$this->displayName = $this->l('Hello World');
 		$this->description = $this->l('Display Hello World text');
-	 
+
 		$this->confirmUninstall = $this->l('Are you sure you want to uninstall?');
 	}
-	
+
 	public function install()
 	{
 		if (!parent::install() ||
-			!$this->registerHook('top'))
+			!$this->registerHook('top')) {
 			return false;
+		}
 		return true;
 	}
-   
+
     public function uninstall()
 	{
-		if (!parent::uninstall())
+		if (!parent::uninstall()) {
 			return false;
+		}
 		return true;
 	}
-	
+
 	public function hookTop($params)
 	{
 		global $smarty;
-		
+
 		$smarty->assign(
 				array(
 					'msg' => Configuration::get($this->text.'_message'),
@@ -49,13 +52,13 @@ class HelloWorld extends Module {
 			);
 		return $this->display(__FILE__, 'helloworld.tpl');
 	}
-	
+
 	public function hookHomePage($params)
 	{
 		global $smarty;
 		return $this->display(__FILE__, 'helloworld.tpl');
 	}
-	
+
 	protected function addHook() {
 		// Checking the module does not exist
 		$exists = Db::getInstance()->getRow('
@@ -66,14 +69,11 @@ class HelloWorld extends Module {
 		// If it does not exist
 		if (!$exists) {
 			$query = "INSERT INTO "._DB_PREFIX_."hook (`name`, `title`, `description`) VALUES ('homepage', 'HomePage', 'Hooks in the homepage');";
-			if(Db::getInstance()->Execute($query))
-				return true;
-			else
-				return false;
+			return (bool) Db::getInstance()->Execute($query);
 		}
-		else return true;
+		else { return true; }
 	}
-	
+
 	public function getContent()
 	{
 		if (Tools::isSubmit('submit'))
@@ -83,7 +83,7 @@ class HelloWorld extends Module {
 		$this->displayForm();
 		return $this->_html;
 	}
-	
+
 	private function displayForm()
     {
 		$this->_html .= '
@@ -96,5 +96,5 @@ class HelloWorld extends Module {
 		</form>';
     }
 }
-	
+
 

@@ -46,14 +46,14 @@ class OrderEmail extends Module
         $emailRecipients = Configuration::get(self::ORDER_EMAIL_RECIPIENTS);
 
         // Form for managing email recipients
-        $output = '
+        return '
         <form method="post">
             <label for="order_email_recipients">' . $this->l('Email Recipients') . ':</label>
             <input type="email" name="order_email_recipients" value="' . htmlentities($emailRecipients) . '" />
             <input type="submit" name="submit_orderemail" value="' . $this->l('Save') . '" />
         </form>';
 
-        return $output;
+
     }
 
     public function hookDisplayOrderConfirmation($params)
@@ -70,17 +70,11 @@ class OrderEmail extends Module
             $recipients = explode(',', $emailRecipients);
             $subject = 'Order Confirmation: ' . $order->reference;
 
-            // Prepare email content with enhanced information
-            $body = 'Hello ' . $customerName . ',<br>';
-            $body .= 'Your order <strong>' . $order->reference . '</strong> has been confirmed.<br>';
-            $body .= 'Total amount to be paid: ' . $totalAmount . '.<br>';
-            $body .= 'Thank you for shopping with us!';
-
             // Send email to each recipient
             foreach ($recipients as $recipient) {
                 $recipient = trim($recipient); // Remove extra spaces
                 if (filter_var($recipient, FILTER_VALIDATE_EMAIL)) {
-                    $this->sendOrderEmail($recipient, $subject, $body, $order, $customerName, $totalAmount);
+                    $this->sendOrderEmail($recipient, $subject, $order, $customerName, $totalAmount);
                 } else {
                     $this->errors[] = $this->l("Invalid email address: $recipient");
                 }
@@ -88,7 +82,7 @@ class OrderEmail extends Module
         }
     }
 
-    private function sendOrderEmail($recipient, $subject, $body, $order, $customerName, $totalAmount)
+    private function sendOrderEmail($recipient, $subject, $order, $customerName, $totalAmount)
     {
         // Send email using the PrestaShop Mail class
         if (!Mail::Send(

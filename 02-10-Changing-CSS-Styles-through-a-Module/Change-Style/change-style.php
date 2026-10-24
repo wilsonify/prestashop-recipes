@@ -119,7 +119,7 @@ class CustomCss extends Module
         $cssFile = _PS_MODULE_DIR_ . $this->name . '/views/css/custom.css';
 
         // If the custom CSS file doesn't exist or is outdated, create it
-        if (!file_exists($cssFile) || md5($css) !== md5(file_get_contents($cssFile))) {
+        if (!file_exists($cssFile) || hash('sha256', $css) !== hash('sha256', file_get_contents($cssFile))) {
             file_put_contents($cssFile, $css);
         }
 

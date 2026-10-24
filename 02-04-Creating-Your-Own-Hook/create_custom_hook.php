@@ -1,8 +1,8 @@
 <?php
 
 // Include PrestaShop configuration and initialization files
-include(dirname(__FILE__).'/config/config.inc.php');
-include(dirname(__FILE__).'/init.php');
+include_once dirname(__FILE__).'/config/config.inc.php';
+include_once dirname(__FILE__).'/init.php';
 
 // Function to log errors
 function logError($message) {

@@ -1,9 +1,10 @@
 <?php
-if(!defined('_PS_VERSION_'))
+if(!defined('_PS_VERSION_')) {
 	exit;
-	
+}
+
 class OrderEmail extends Module {
-	
+
 	public function __construct()
    {
 		$this->name = 'orderemail';
@@ -11,36 +12,37 @@ class OrderEmail extends Module {
 		$this->version = '1.0.0';
 		$this->author = 'Arnaldo Perez Castano';
 		$this->need_instance = 0;
-		$this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_); 
+		$this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);
 		$this->bootstrap = true;
-	 
+
 		parent::__construct();
-	 
+
 		$this->displayName = $this->l('Order Email');
 		$this->description = $this->l('Send email notifications after order confirmation');
-	 
+
 		$this->confirmUninstall = $this->l('Are you sure you want to uninstall?');
 	}
-	
+
 	public function install()
 	{
-		if (!parent::install())
+		if (!parent::install()) {
 			return false;
+		}
 		return true;
 	}
-   
+
     public function uninstall()
 	{
-		if (!parent::uninstall())
+		if (!parent::uninstall()) {
 			return false;
+		}
 		return true;
 	}
-	
+
 	public function hookdisplayOrderConfirmation($params)
 	{
-		$email = Configuration::get('emails');
 		$customer = $this->context->customer;
-		
+
 		return Mail::Send(
 			$this->context->language->id,
 			'order_conf',
@@ -54,7 +56,7 @@ class OrderEmail extends Module {
 			$customer->firstname.' '.$customer->lastname
 		);
 	}
-	
+
 	public function getContent()
 	{
 		if (Tools::isSubmit('submit'))
@@ -64,7 +66,7 @@ class OrderEmail extends Module {
 		$this->displayForm();
 		return $this->_html;
 	}
-	
+
 	private function displayForm()
     {
 		$this->_html .= '
@@ -77,5 +79,5 @@ class OrderEmail extends Module {
 		</form>';
     }
 }
-	
+
 

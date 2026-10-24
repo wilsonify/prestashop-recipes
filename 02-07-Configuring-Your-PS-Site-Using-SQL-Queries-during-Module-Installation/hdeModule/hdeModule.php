@@ -5,8 +5,9 @@
 *  Property of Havana Digital Enterprises
 */
 
-if (!defined('_PS_VERSION_'))
+if (!defined('_PS_VERSION_')) {
 	exit;
+}
 
 class HdeModule extends Module
 {
@@ -25,30 +26,31 @@ class HdeModule extends Module
 
 	public function install()
 	{
-		if (!file_exists(dirname(__FILE__).'/'.self::INSTALL_SQL_FILE))
+		if (!file_exists(dirname(__FILE__).'/'.self::INSTALL_SQL_FILE)
+            || !($sql = Tools::file_get_contents(dirname(__FILE__).'/'.self::INSTALL_SQL_FILE))) {
             return false;
-        else if (!$sql = Tools::file_get_contents(dirname(__FILE__).'/'.self::INSTALL_SQL_FILE))
-            return false;
+        }
 
         $sql = str_replace(array('PREFIX_',  'DBNAME_'), array(_DB_PREFIX_, _DB_NAME_), $sql);
         $sql = preg_split("/;\s*[\r\n]+/", $sql);
 
         foreach ($sql as $query) {
-            if ($query) {
-                if (!Db::getInstance()->execute(trim($query)))
-                    return false;
+            if ($query && !Db::getInstance()->execute(trim($query))) {
+                return false;
             }
         }
 
-		if (!parent::install())
+		if (!parent::install()) {
             return false;
+		}
 		return true;
 	}
 
 	public function uninstall()
 	{
-		if ( !parent::uninstall() )
+		if ( !parent::uninstall() ) {
 			Db::getInstance()->Execute( 'DELETE FROM `' . _DB_PREFIX_ . 'hdeModule`' );
+		}
 		parent::uninstall();
 	}
 }

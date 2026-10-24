@@ -186,5 +186,3 @@ echo "Created placeholder logo.gif in $moduleDir\n";
 
 // 6. Output success message
 echo "Module '$moduleName' has been successfully created and is ready for installation!\n";
-
-?>

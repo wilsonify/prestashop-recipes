@@ -70,7 +70,6 @@ class CustomTheme extends Module
         $themeSettings = json_decode(Configuration::get(self::CUSTOM_THEME_SETTINGS), true);
         $customColors = isset($themeSettings['colors']) ? $themeSettings['colors'] : '';
         $fontFamily = isset($themeSettings['font']) ? $themeSettings['font'] : '';
-        $logo = isset($themeSettings['logo']) ? $themeSettings['logo'] : '';
 
         $this->_html = '
         <form method="post" enctype="multipart/form-data">
@@ -158,7 +157,7 @@ class CustomTheme extends Module
         $cssFile = _PS_MODULE_DIR_ . $this->name . '/views/css/custom_theme.css';
 
         // If the CSS file doesn't exist or the contents are different, rewrite the file
-        if (!file_exists($cssFile) || md5($css) !== md5(file_get_contents($cssFile))) {
+        if (!file_exists($cssFile) || hash('sha256', $css) !== hash('sha256', file_get_contents($cssFile))) {
             file_put_contents($cssFile, $css);
         }
 

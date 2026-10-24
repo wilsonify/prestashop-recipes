@@ -1,9 +1,10 @@
 <?php
-if(!defined('_PS_VERSION_'))
+if(!defined('_PS_VERSION_')) {
 	exit;
-	
+}
+
 class YouTube extends Module {
-	
+
 	public function __construct()
    {
 		$this->name = 'youtube';
@@ -11,36 +12,38 @@ class YouTube extends Module {
 		$this->version = '1.0.0';
 		$this->author = 'Arnaldo Perez Castano';
 		$this->need_instance = 0;
-		$this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_); 
+		$this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);
 		$this->bootstrap = true;
-	 
+
 		parent::__construct();
-	 
+
 		$this->displayName = $this->l('YouTube');
 		$this->description = $this->l('Display YouTube videos');
-	 
+
 		$this->confirmUninstall = $this->l('Are you sure you want to uninstall?');
 	}
-	
+
 	public function install()
 	{
 		if (!parent::install() ||
-			!$this->registerHook('homepage'))
+			!$this->registerHook('homepage')) {
 			return false;
+		}
 		return true;
 	}
-   
+
     public function uninstall()
 	{
-		if (!parent::uninstall())
+		if (!parent::uninstall()) {
 			return false;
+		}
 		return true;
 	}
-	
+
 	public function hookTop($params)
 	{
 		global $smarty;
-		
+
 		$smarty->assign(
 				array(
 					'link' => Configuration::get('youtube_link'),
@@ -48,19 +51,12 @@ class YouTube extends Module {
 			);
 		return $this->display(__FILE__, 'youtube.tpl');
 	}
-	
+
 	public function hookHomePage($params)
 	{
-		global $smarty;
-		
-		$smarty->assign(
-				array(
-					'link' => Configuration::get('youtube_link'),
-				)
-			);
-		return $this->display(__FILE__, 'youtube.tpl');
+		return $this->hookTop($params);
 	}
-	
+
 	protected function addHook() {
 		// Checking the module does not exist
 		$exists = Db::getInstance()->getRow('
@@ -71,14 +67,11 @@ class YouTube extends Module {
 		// If it does not exist
 		if (!$exists) {
 			$query = "INSERT INTO "._DB_PREFIX_."hook (`name`, `title`, `description`) VALUES ('homepage', 'HomePage', 'Hooks in the homepage');";
-			if(Db::getInstance()->Execute($query))
-				return true;
-			else
-				return false;
+			return (bool) Db::getInstance()->Execute($query);
 		}
-		else return true;
+		else { return true; }
 	}
-	
+
 	public function getContent()
 	{
 		if (Tools::isSubmit('submit'))
@@ -88,7 +81,7 @@ class YouTube extends Module {
 		$this->displayForm();
 		return $this->_html;
 	}
-	
+
 	private function displayForm()
     {
 		$this->_html .= '
@@ -101,5 +94,5 @@ class YouTube extends Module {
 		</form>';
     }
 }
-	
+
 

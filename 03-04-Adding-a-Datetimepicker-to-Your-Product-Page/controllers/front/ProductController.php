@@ -26,6 +26,7 @@
 
 class ProductControllerCore extends FrontController
 {
+    const IMAGE_UPLOAD_ERROR = 'An error occurred during the image upload process.';
     public $php_self = 'product';
 
     /** @var Product */
@@ -650,7 +651,7 @@ class ProductControllerCore extends FrontController
         $indexes = array_flip($authorized_file_fields);
         foreach ($_FILES as $field_name => $file) {
             if (in_array($field_name, $authorized_file_fields) && isset($file['tmp_name']) && !empty($file['tmp_name'])) {
-                $file_name = md5(uniqid((string) random_int(PHP_INT_MIN, PHP_INT_MAX), true));
+                $file_name = bin2hex(random_bytes(16));
                 if ($error = ImageManager::validateUpload($file, (int)Configuration::get('PS_PRODUCT_PICTURE_MAX_SIZE'))) {
                     $this->errors[] = $error;
                 }
@@ -663,13 +664,13 @@ class ProductControllerCore extends FrontController
                 }
                 /* Original file */
                 if (!ImageManager::resize($tmp_name, _PS_UPLOAD_DIR_.$file_name)) {
-                    $this->errors[] = Tools::displayError('An error occurred during the image upload process.');
+                    $this->errors[] = Tools::displayError(self::IMAGE_UPLOAD_ERROR);
                 }
                 /* A smaller one */
                 elseif (!ImageManager::resize($tmp_name, _PS_UPLOAD_DIR_.$file_name.'_small', $product_picture_width, $product_picture_height)) {
-                    $this->errors[] = Tools::displayError('An error occurred during the image upload process.');
+                    $this->errors[] = Tools::displayError(self::IMAGE_UPLOAD_ERROR);
                 } elseif (!chmod(_PS_UPLOAD_DIR_.$file_name, 0777) || !chmod(_PS_UPLOAD_DIR_.$file_name.'_small', 0777)) {
-                    $this->errors[] = Tools::displayError('An error occurred during the image upload process.');
+                    $this->errors[] = Tools::displayError(self::IMAGE_UPLOAD_ERROR);
                 } else {
                     $this->context->cart->addPictureToProduct($this->product->id, $indexes[$field_name], Product::CUSTOMIZE_FILE, $file_name);
                 }
@@ -782,8 +783,9 @@ class ProductControllerCore extends FrontController
 			{
 				$error_list = implode('; ', $this->errors);
 				die(Tools::jsonEncode(array('errors' => $error_list)));
-			} else
+			} else {
 				die(Tools::jsonEncode(array('success' => true)));
+			}
 				 
 		}
 	}
