@@ -24,23 +24,17 @@ function transplantModule($moduleName, $currentHookName, $newHookName) {
         echo "Error: One or more inputs are empty.";
         return;
     }
-
-    // Get the hook IDs by their names
+    // Get the hook and module IDs by name
     $currentHookId = (int)Hook::getIdByName($currentHookName);
     $newHookId = (int)Hook::getIdByName($newHookName);
-
-    if ($currentHookId <= 0 || $newHookId <= 0) {
-        $message = "Error: One or both hooks ('$currentHookName', '$newHookName') do not exist.";
-        logError($message);
-        echo $message;
-        return;
-    }
-
-    // Get the module ID by its name
     $moduleId = (int)Module::getIdByName($moduleName);
 
-    if ($moduleId <= 0) {
-        $message = "Error: Module '$moduleName' does not exist.";
+    if ($currentHookId <= 0 || $newHookId <= 0 || $moduleId <= 0) {
+        if ($currentHookId <= 0 || $newHookId <= 0) {
+            $message = "Error: One or both hooks ('$currentHookName', '$newHookName') do not exist.";
+        } else {
+            $message = "Error: Module '$moduleName' does not exist.";
+        }
         logError($message);
         echo $message;
         return;
