@@ -24,20 +24,13 @@ function changeModulePosition($moduleName, $hookName, $newPosition) {
         echo "Error: Invalid input values.";
         return;
     }
-
-    // Get the hook ID by its name
+    // Get the hook and module IDs by name
     $hookId = (int)Hook::getIdByName($hookName);
-    if ($hookId <= 0) {
-        $message = "Error: Hook '$hookName' does not exist.";
-        logError($message);
-        echo $message;
-        return;
-    }
-
-    // Get the module ID by its name
     $moduleId = (int)Module::getIdByName($moduleName);
-    if ($moduleId <= 0) {
-        $message = "Error: Module '$moduleName' does not exist.";
+    if ($hookId <= 0 || $moduleId <= 0) {
+        $message = $hookId <= 0
+            ? "Error: Hook '$hookName' does not exist."
+            : "Error: Module '$moduleName' does not exist.";
         logError($message);
         echo $message;
         return;
