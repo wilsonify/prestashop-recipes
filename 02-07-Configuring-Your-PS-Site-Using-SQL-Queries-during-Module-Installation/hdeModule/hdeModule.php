@@ -6,53 +6,56 @@
 */
 
 if (!defined('_PS_VERSION_')) {
-	exit;
+    exit;
 }
 
 class HdeModule extends Module
 {
-	const INSTALL_SQL_FILE = 'install.sql';
-	public function __construct()
-	{
-		$this->name = 'hdeModule';
-		$this->tab = 'Products';
-		$this->version = 1.0;
-		$this->author = 'Arnaldo Perez';
-		$this->need_instance = 0;
-		parent::__construct();
-		$this->displayName = $this->l( 'Havana Digital Enterprises Module' );
-		$this->description = $this->l( 'Reservation, booking system for HDE.' );
-	}
+    const INSTALL_SQL_FILE = 'install.sql';
+    public function __construct()
+    {
+        $this->name = 'hdeModule';
+        $this->tab = 'Products';
+        $this->version = 1.0;
+        $this->author = 'Arnaldo Perez';
+        $this->need_instance = 0;
+        parent::__construct();
+        $this->displayName = $this->l( 'Havana Digital Enterprises Module' );
+        $this->description = $this->l( 'Reservation, booking system for HDE.' );
+    }
+    public function install()
+    {
+        return $this->executeInstallQueries() && parent::install();
+    }
 
-	public function install()
-	{
-		if (!file_exists(dirname(__FILE__).'/'.self::INSTALL_SQL_FILE)
-            || !($sql = Tools::file_get_contents(dirname(__FILE__).'/'.self::INSTALL_SQL_FILE))) {
+    /**
+     * Run every statement from the module's install.sql file.
+     */
+    private function executeInstallQueries()
+    {
+        $file = dirname(__FILE__).'/'.self::INSTALL_SQL_FILE;
+        if (!file_exists($file) || !($sql = Tools::file_get_contents($file))) {
             return false;
         }
 
         $sql = str_replace(array('PREFIX_',  'DBNAME_'), array(_DB_PREFIX_, _DB_NAME_), $sql);
-        $sql = preg_split("/;\s*[\r\n]+/", $sql);
 
-        foreach ($sql as $query) {
+        foreach (preg_split("/;\s*[\r\n]+/", $sql) as $query) {
             if ($query && !Db::getInstance()->execute(trim($query))) {
                 return false;
             }
         }
 
-		if (!parent::install()) {
-            return false;
-		}
-		return true;
-	}
+        return true;
+    }
 
-	public function uninstall()
-	{
-		if ( !parent::uninstall() ) {
-			Db::getInstance()->Execute( 'DELETE FROM `' . _DB_PREFIX_ . 'hdeModule`' );
-		}
-		parent::uninstall();
-	}
+    public function uninstall()
+    {
+        if ( !parent::uninstall() ) {
+            Db::getInstance()->Execute( 'DELETE FROM `' . _DB_PREFIX_ . 'hdeModule`' );
+        }
+        parent::uninstall();
+    }
 }
 
 
