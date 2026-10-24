@@ -46,6 +46,13 @@ This chapter provides recipes for improving SEO. Following that, we cover essent
 
 Learn best practices for maintaining your PrestaShop store. Throughout the book, we provide easy-to-follow recipes for customizing PrestaShop’s powerful features.
 
+## Third-party code
+
+The recipes include a few PrestaShop core files and the `classic` theme so the
+chapters can be followed by copying whole files. They are intentionally tracked;
+see [`THIRD_PARTY.md`](THIRD_PARTY.md) for the base versions, licenses, and the
+reason they are not downloaded at build time.
+
 ## Releases
 
 - **Release v1.0**: Contains the original source code from the published book, without corrections or updates.
