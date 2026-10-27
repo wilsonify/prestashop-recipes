@@ -52,7 +52,7 @@ Let’s say your website, **havanaclassiccartour.com**, is a startup with a low 
 
 This strategy helps move your website higher in search engine results, which increases the chances of people finding your site through organic search.
 
-![Backlink Example](path/to/screenshot-7-28.jpg) *(Ensure you have the screenshot image here)*
+*Backlink Example - ensure the screenshot image is added here*
 
 ## Conclusion
 

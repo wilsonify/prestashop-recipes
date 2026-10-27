@@ -44,7 +44,7 @@ Here’s an example of how the page might look after you’ve made the necessary
 
 Once maintenance mode is enabled, your visitors will see a "Maintenance" message on the storefront, and only users with the specified IP addresses will have access to the Back Office or the live site.
 
-![Maintenance Mode Example](path/to/screenshot-8-2.jpg) *(Include a screenshot for reference)*
+*Maintenance Mode Example - include a screenshot for reference*
 
 ## How It Works
 

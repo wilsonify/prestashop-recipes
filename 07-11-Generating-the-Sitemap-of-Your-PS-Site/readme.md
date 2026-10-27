@@ -29,7 +29,7 @@ To improve your SEO, you can create and include a **sitemap.xml** file in your P
    - Once installed, click the **Configure** link to set up the sitemap (see Figure 7-25).
    - In the configuration page, you can customize which pages should be included in the sitemap and the frequency at which the sitemap is updated.
 
-   ![Google Sitemap Configuration](path/to/screenshot-7-25.jpg) *(Ensure you have the screenshot image here)*
+   *Google Sitemap Configuration - ensure the screenshot image is added here*
 
 3. **Generate the Sitemap**:
    - After configuring the module, click the **Generate Sitemap** button to create your sitemap.xml file. This file will be placed in the root directory of your PrestaShop installation.
@@ -44,7 +44,7 @@ In the Google Sitemap module’s configuration page, you can define several key 
 - **Pages to Include**: Select which pages of your store should be included in the sitemap (e.g., products, categories, CMS pages).
 - **Update Frequency**: Specify how often the content on your pages is updated. This can help Google prioritize crawling based on the frequency of updates.
 
-   ![Google Sitemap Configuration](path/to/screenshot-7-26.jpg) *(Ensure you have the screenshot image here)*
+   *Google Sitemap Configuration - ensure the screenshot image is added here*
 
 ## How It Works
 

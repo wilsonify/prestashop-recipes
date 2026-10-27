@@ -2,14 +2,12 @@
 
 This repository accompanies [*PrestaShop Recipes*](http://www.apress.com/9781484225738) by Arnaldo Pérez Castaño (Apress, 2017).
 
-![Cover image](9781484225738.jpg)
-
 ## Getting Started
 
 To get started, clone the repository to your machine using Git:
 
 ```sh
-git clone https://github.com/your-repo-url.git
+git clone https://github.com/wilsonify/prestashop-recipes.git
 ```
 
 ## Contents

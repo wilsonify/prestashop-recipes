@@ -40,7 +40,7 @@ To enable Friendly URLs in PrestaShop, you need to follow these steps:
 
    Activating Friendly URLs will replace these complex URLs with simpler, keyword-rich ones, improving the user experience and SEO.
 
-   ![Activating Friendly URLs](link_to_image/figure7-1.png)  <!-- Replace with actual image path -->
+   *Activating Friendly URLs (screenshot not yet added)*  <!-- Replace with actual image path -->
 
 ### Additional Configuration for Friendly URLs
 
@@ -82,7 +82,7 @@ After enabling friendly URLs, PrestaShop generates SEO-friendly URLs for product
 1. **Back Office Navigation**: In your PrestaShop Back Office, go to **Preferences > SEO & URLs**.
 2. **Set Friendly URLs to Yes**: In the **Set Up URLs** section, find the **Friendly URL** field and switch it to **Yes**.
    
-   ![Setting up Friendly URLs](link_to_image/figure7-2.png) <!-- Replace with actual image path -->
+   *Setting up Friendly URLs (screenshot not yet added)* <!-- Replace with actual image path -->
 
 3. **Save Changes**: After enabling friendly URLs, save your changes.
 

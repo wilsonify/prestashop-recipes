@@ -26,7 +26,7 @@ To solve this problem, we will create a **Date attribute** in PrestaShop and ass
    - In your PrestaShop back office, go to **Catalog > Product Attributes**.
    - This section allows you to manage all product attributes and their combinations, where we'll be creating the new Date attribute for event products.
 
-   ![Product attributes section](link_to_image/figure6-1.png)
+   *Product attributes section (screenshot not yet added)*
 
 2. **Add a New Attribute**
    - On the upper right corner of the Product Attributes page, click the **Add New Attribute** button.
@@ -36,7 +36,7 @@ To solve this problem, we will create a **Date attribute** in PrestaShop and ass
    - In the form, enter the name of the new attribute. For our case, we'll name it **Date**.
    - You can add other information if needed, such as description, but for the Date attribute, the name should be sufficient to help customers understand that they will be selecting a date for the event.
 
-   ![Add Date Attribute](link_to_image/figure6-2.png)
+   *Add Date Attribute (screenshot not yet added)*
 
 4. **Create Date Values (Combinations)**
    - Once the Date attribute is created, you need to associate it with specific values (the actual event dates). This is done through **combinations**.

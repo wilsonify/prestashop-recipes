@@ -54,7 +54,7 @@ After installing the module, you can use it to easily change the CSS styles of y
 ### Visual Example
 Once the module is installed, you’ll see an interface that looks like this:
 
-![CSS Editing Module Installed](path/to/your/screenshot.png)
+*CSS Editing Module Installed (screenshot not yet added)*
 
 You can use this interface to add custom styles like:
 ```css

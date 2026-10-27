@@ -52,7 +52,7 @@ If you prefer not to use virtual products but still want to offer unlimited tick
    - In the **Back Office**, navigate to **Preferences > Products**.
    - Here, you can disable **Stock Management** entirely. This will prevent PrestaShop from tracking stock levels for your event products.
 
-   ![Stock management disabled](link_to_image/figure6-9.png)
+   *Stock management disabled (screenshot not yet added)*
 
 2. **Configure the Product for Unlimited Sales**
    - Now, you can proceed with setting up combinations for your event, such as available event dates.

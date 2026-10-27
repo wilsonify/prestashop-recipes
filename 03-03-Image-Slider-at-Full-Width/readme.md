@@ -46,7 +46,7 @@ This needs to be changed to allow the slider to take up 100% of the width availa
    - In most browsers (e.g., Chrome, Firefox), press `F12` or right-click on the slider and select "Inspect" or "Inspect Element."
    - Identify the `div` element wrapping the image slider. You'll notice that it has a CSS rule, likely a `max-width` or `width` property, which is limiting its size.
 
-   ![Inspecting the Image Slider](images/inspect_slider.png)  
+   *Inspecting the Image Slider (screenshot not yet added)*  
    *Inspecting the PrestaShop home page in Mozilla Firefox using the developer tools.*
 
 2. **Remove Width Restrictions**
